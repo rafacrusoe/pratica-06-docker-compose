@@ -1,0 +1,32 @@
+name: Validar Prática 06 Docker Compose
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Baixar o repositório
+        uses: actions/checkout@v4
+
+      - name: Validar a configuração do Docker Compose
+        run: docker compose config --quiet
+
+      - name: Executar as três ações da prática
+        run: bash scripts/run-all.sh
+
+      - name: Publicar as evidências
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-pratica-06
+          path: evidencias/
+          if-no-files-found: error
+          retention-days: 30
